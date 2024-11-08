@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- Incluir la descripción del UR5e -->
+  <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+
+  <!-- Incluir la descripción de la SoftHand -->
+  <xacro:include filename="$(find qb_hand_description)/urdf/qbhand2m.urdf.xacro"/>
+
+  <!-- Macro para definir el robot completo -->
+  <xacro:macro name="my_robot_cell" params="
+    parent
+    *origin
+    ur_type
+    joint_limits_parameters_file
+    kinematics_parameters_file
+    physical_parameters_file
+    visual_parameters_file
+    ">
+
+    <!-- Montaje del robot -->
+    <link name="robot_mount"/>
+    <joint name="base_to_robot_mount" type="fixed">
+      <parent link="world"/>
+      <child link="robot_mount"/>
+      <origin xyz="0 0 0" rpy="0 0 ${pi}" />
+    </joint>
+
+    <!-- Crear el UR5e específico -->
+    <xacro:ur_robot
+      name="${ur_type}"
+      tf_prefix="${ur_type}_"
+      parent="robot_mount"
+      joint_limits_parameters_file="${joint_limits_parameters_file}"
+      kinematics_parameters_file="${kinematics_parameters_file}"
+      physical_parameters_file="${physical_parameters_file}"
+      visual_parameters_file="${visual_parameters_file}"
+    >
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:ur_robot>
+
+    <!-- Conectar la SoftHand al UR5e -->
+    <joint name="wrist_3_to_hand_mount" type="fixed">
+      <parent link="${ur_type}_tool0"/>
+      <child link="root_link"/> <!-- Enlace base de la SoftHand -->
+      <origin xyz="0 0 0" rpy="0 0 0"/> <!-- Ajusta el offset según sea necesario -->
+    </joint>
+
+  </xacro:macro>
+</robot>
