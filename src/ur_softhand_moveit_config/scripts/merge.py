@@ -46,7 +46,7 @@ class JointStateMerger(Node):
 
     def _replace_qbhand_names(self, qbhand_names):
         # Remueve el prefijo "m1" de los nombres de las articulaciones de QBHand
-        return [name.replace("qbhand2m1_", "qbhand2m") for name in qbhand_names]
+        return [name.replace("qbhand2m1_", "qbhand2m1_") for name in qbhand_names]
 
 def main(args=None):
     rclpy.init(args=args)
